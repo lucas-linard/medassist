@@ -51,6 +51,21 @@ export const diseases = [
   ],
 ];
 
+
+const transformDataToAI = (data) => {
+ let result = [];
+  
+  for (let i = 0;i < diseases.length;i++){
+  
+    for (let j = 0;j < diseases[i].length;j++){
+      result.push(data.includes(diseases[i][j]) ? 1 : 0);
+    }
+   
+  }
+  console.log(result);
+  console.log(result.length)
+}
+
 export function FirstStep({ onClick }) {
   return (
     <>
@@ -80,7 +95,8 @@ export function FirstStep({ onClick }) {
   );
 }
 
-export function SecondStep({ step, submit }) {
+export function SecondStep({ step, submit, onChange, selected }) {
+ 
   return (
     <Box display="flex" flexDirection="column">
       <Typography variant="h1" fontWeight="Bold" fontSize={32} color="black">
@@ -88,11 +104,20 @@ export function SecondStep({ step, submit }) {
       </Typography>
       <FormGroup sx={{ marginTop: 5 }}>
         {diseases[step].map((disease, index) => (
-          <FormControlLabel control={<Checkbox />} label={disease} />
+          <FormControlLabel control={
+          <Checkbox
+          checked={selected.includes(disease)}
+          onChange={() => onChange(disease)}
+             
+             />} label={disease} />
         ))}
       </FormGroup>
       {step === 3 && (
-        <Button variant="contained" sx={{ marginTop: 5 }} onClick={submit}>
+        <Button variant="contained" sx={{ marginTop: 5 }} 
+        // onClick={submit}
+        onClick={() =>transformDataToAI(selected)}
+        
+        >
           Enviar
         </Button>
       )}

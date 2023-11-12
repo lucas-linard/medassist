@@ -5,12 +5,36 @@ import MobileStepper from "@mui/material/MobileStepper";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import Navbar from "@/components/Navbar";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 import { FirstStep, SecondStep, ThirdStep } from "./Form/Form";
+import axios from "axios";
+
 
 export default function Home() {
+  const [selectedDiseases, setSelectedDiseases] = useState([]);
+
+  const teste = async () => {
+    const result = await axios.get("http://localhost:3000/api/AI");
+    console.log(result.data);
+  }
+
+
   const [activeStep, setActiveStep] = useState(0);
+  const handleCheckbox = (disease) => {
+    setSelectedDiseases((prevSelectedDiseases) => {
+      console.log(prevSelectedDiseases);
+      // Verifica se a doença já está presente em selectedDiseases
+      const isDiseaseSelected = prevSelectedDiseases.includes(disease);
+  
+      // Se estiver presente, remove a doença, senão adiciona
+      if (isDiseaseSelected) {
+        return prevSelectedDiseases.filter((selected) => selected !== disease);
+      } else {
+        return [...prevSelectedDiseases, disease];
+      }
+    });
+  }
 
   const Stepper = {
     0: (
@@ -18,10 +42,10 @@ export default function Home() {
         onClick={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)}
       />
     ),
-    1: <SecondStep step={activeStep - 1} />,
-    2: <SecondStep step={activeStep - 1} />,
-    3: <SecondStep step={activeStep - 1} />,
-    4: <SecondStep step={activeStep - 1} submit={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)} />,
+    1: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases} />,
+    2: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases}/>,
+    3: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases}/>,
+    4: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases} submit={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)} />,
     5: <ThirdStep onClick={() => setActiveStep(0)}/>,
   };
 
@@ -32,6 +56,9 @@ export default function Home() {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+
+  
   //acompanha o currentWidth do browser
   var w = window.innerWidth;
   window.addEventListener('resize', () => w = window.innerWidth);
@@ -53,6 +80,7 @@ export default function Home() {
         gap={5}
         sx={{ borderRadius: "40px 40px 0 0" }}
       >
+        <Button onClick={teste}>Teste</Button>
         {Stepper[activeStep]}
         {(activeStep != 0 && activeStep < 5) && (
           <Box
