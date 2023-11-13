@@ -5,6 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import TemporaryDrawer from "../Drawer";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import Image from 'next/image'
 
 import Logo from "../../assets/images/Logo.png";
 
@@ -29,7 +30,7 @@ export default function Navbar() {
           >
             <MenuIcon />
           </IconButton>
-          <img src={Logo} alt="Logo" width="50" height="50" />
+          <Image src={Logo} alt="Logo"  />
         </Toolbar>
       </AppBar>
     </Box>

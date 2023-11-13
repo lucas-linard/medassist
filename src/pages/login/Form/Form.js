@@ -8,6 +8,7 @@ import {
   Box,
 } from "@mui/material";
 
+import { useState } from "react";
 export const diseases = [
   [
     "Febre",
@@ -51,22 +52,21 @@ export const diseases = [
   ],
 ];
 
-
 const transformDataToAI = (data) => {
- let result = [];
-  
-  for (let i = 0;i < diseases.length;i++){
-  
-    for (let j = 0;j < diseases[i].length;j++){
+  let result = [];
+
+  for (let i = 0; i < diseases.length; i++) {
+    for (let j = 0; j < diseases[i].length; j++) {
       result.push(data.includes(diseases[i][j]) ? 1 : 0);
     }
-   
   }
   console.log(result);
-  console.log(result.length)
-}
+  console.log(result.length);
+};
 
 export function FirstStep({ onClick }) {
+  const [code, setCode] = useState("");
+  const [invalid, setInvalid] = useState(false);
   return (
     <>
       <Typography variant="h1" fontWeight="Bold" fontSize={32} color="black">
@@ -86,9 +86,30 @@ export function FirstStep({ onClick }) {
         label="Codigo"
         variant="outlined"
         fullWidth
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
       />
-
-      <Button variant="contained" onClick={onClick}>
+      {invalid && (
+        <Typography
+          variant="body1"
+          fontWeight="Bold"
+          fontSize={14}
+          color="red"
+          sx={{ marginTop: -3 }}
+        >
+          Codigo invalido!! tente novamente
+        </Typography>
+      )}
+      <Button
+        variant="contained"
+        onClick={() => {
+          if (code !== "1618") {
+            setInvalid(true);
+          } else {
+            onClick();
+          }
+        }}
+      >
         Confirmar
       </Button>
     </>
@@ -96,7 +117,7 @@ export function FirstStep({ onClick }) {
 }
 
 export function SecondStep({ step, submit, onChange, selected }) {
- 
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <Box display="flex" flexDirection="column">
       <Typography variant="h1" fontWeight="Bold" fontSize={32} color="black">
@@ -104,19 +125,33 @@ export function SecondStep({ step, submit, onChange, selected }) {
       </Typography>
       <FormGroup sx={{ marginTop: 5 }}>
         {diseases[step].map((disease, index) => (
-          <FormControlLabel control={
-          <Checkbox
-          checked={selected.includes(disease)}
-          onChange={() => onChange(disease)}
-             
-             />} label={disease} />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={selected.includes(disease)}
+                onChange={() => onChange(disease)}
+              />
+            }
+            key={index}
+            label={disease}
+          />
         ))}
       </FormGroup>
       {step === 3 && (
-        <Button variant="contained" sx={{ marginTop: 5 }} 
-        // onClick={submit}
-        onClick={() =>transformDataToAI(selected)}
-        
+        <Button
+          variant="contained"
+          sx={{ marginTop: 5 }}
+          onClick={async () => {
+            try {
+              setIsLoading(true);
+              await submit();
+            } catch (error) {
+              setIsLoading(false);
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+          disabled={isLoading || selected.length === 0}
         >
           Enviar
         </Button>
@@ -125,7 +160,7 @@ export function SecondStep({ step, submit, onChange, selected }) {
   );
 }
 
-export function ThirdStep({ onClick }) {
+export function ThirdStep({ result }) {
   return (
     <>
       <Typography variant="h1" fontWeight="Bold" fontSize={32} color="black">
@@ -137,21 +172,17 @@ export function ThirdStep({ onClick }) {
         color="black"
         sx={{ marginTop: -3 }}
       >
-        Seus sintomas correspondem a ******!
+        Seus sintomas correspondem a {result}!
       </Typography>
-     
+
       <Typography
         variant="body1"
         fontSize={18}
         color="black"
         sx={{ marginTop: -3 }}
       >
-        Recomendamos que você consulte um profissional da saúde para mais informações.
+        Aguarde o profissional capacitado
       </Typography>
-
-      <Button variant="contained" onClick={onClick}>
-        Novo teste
-      </Button>
     </>
   );
 }

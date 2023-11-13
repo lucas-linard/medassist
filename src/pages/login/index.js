@@ -13,10 +13,12 @@ import axios from "axios";
 
 export default function Home() {
   const [selectedDiseases, setSelectedDiseases] = useState([]);
+  const [testTesult, setTestResult] = useState([]);
 
-  const teste = async () => {
-    const result = await axios.get("http://localhost:3000/api/AI");
-    console.log(result.data);
+  const sendToAi = async () => {
+    const result = await axios.post("http://localhost:3000/api/AI",selectedDiseases);
+    setTestResult(result.data.dtc)
+    handleNext();
   }
 
 
@@ -45,8 +47,8 @@ export default function Home() {
     1: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases} />,
     2: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases}/>,
     3: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases}/>,
-    4: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases} submit={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)} />,
-    5: <ThirdStep onClick={() => setActiveStep(0)}/>,
+    4: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases} submit={sendToAi} />,
+    5: <ThirdStep result={testTesult} onClick={() => setActiveStep(0)}/>,
   };
 
   const handleNext = () => {
@@ -80,7 +82,7 @@ export default function Home() {
         gap={5}
         sx={{ borderRadius: "40px 40px 0 0" }}
       >
-        <Button onClick={teste}>Teste</Button>
+        
         {Stepper[activeStep]}
         {(activeStep != 0 && activeStep < 5) && (
           <Box
