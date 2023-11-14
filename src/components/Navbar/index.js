@@ -9,7 +9,7 @@ import Image from 'next/image'
 
 import Logo from "../../assets/images/Logo.png";
 
-export default function Navbar() {
+export default function Navbar({handleNav}) {
 
     const [state, setState] = React.useState({
         left: false,
@@ -17,7 +17,7 @@ export default function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-        <TemporaryDrawer state={state} setState={setState}/>
+        <TemporaryDrawer handleNav={handleNav} state={state} setState={setState}/>
       <AppBar position="static" >
         <Toolbar sx={{ justifyContent: "space-between", backgroundColor: "#fff" }} >
           <IconButton

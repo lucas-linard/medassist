@@ -6,21 +6,23 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import Navbar from "@/components/Navbar";
 import { Box, Button } from "@mui/material";
-
+import AboutUs from "./AboutUs";
 import { FirstStep, SecondStep, ThirdStep } from "./Form/Form";
 import axios from "axios";
 
-
 export default function Home() {
+  const [page, setPage] = useState("Home");
   const [selectedDiseases, setSelectedDiseases] = useState([]);
   const [testTesult, setTestResult] = useState([]);
 
   const sendToAi = async () => {
-    const result = await axios.post("http://localhost:3000/api/AI",selectedDiseases);
-    setTestResult(result.data.dtc)
+    const result = await axios.post(
+      "http://localhost:3000/api/AI",
+      selectedDiseases
+    );
+    setTestResult(result.data.dtc);
     handleNext();
-  }
-
+  };
 
   const [activeStep, setActiveStep] = useState(0);
   const handleCheckbox = (disease) => {
@@ -28,7 +30,7 @@ export default function Home() {
       console.log(prevSelectedDiseases);
       // Verifica se a doença já está presente em selectedDiseases
       const isDiseaseSelected = prevSelectedDiseases.includes(disease);
-  
+
       // Se estiver presente, remove a doença, senão adiciona
       if (isDiseaseSelected) {
         return prevSelectedDiseases.filter((selected) => selected !== disease);
@@ -36,7 +38,7 @@ export default function Home() {
         return [...prevSelectedDiseases, disease];
       }
     });
-  }
+  };
 
   const Stepper = {
     0: (
@@ -44,11 +46,36 @@ export default function Home() {
         onClick={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)}
       />
     ),
-    1: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases} />,
-    2: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases}/>,
-    3: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases}/>,
-    4: <SecondStep step={activeStep - 1} onChange={handleCheckbox} selected={selectedDiseases} submit={sendToAi} />,
-    5: <ThirdStep result={testTesult} onClick={() => setActiveStep(0)}/>,
+    1: (
+      <SecondStep
+        step={activeStep - 1}
+        onChange={handleCheckbox}
+        selected={selectedDiseases}
+      />
+    ),
+    2: (
+      <SecondStep
+        step={activeStep - 1}
+        onChange={handleCheckbox}
+        selected={selectedDiseases}
+      />
+    ),
+    3: (
+      <SecondStep
+        step={activeStep - 1}
+        onChange={handleCheckbox}
+        selected={selectedDiseases}
+      />
+    ),
+    4: (
+      <SecondStep
+        step={activeStep - 1}
+        onChange={handleCheckbox}
+        selected={selectedDiseases}
+        submit={sendToAi}
+      />
+    ),
+    5: <ThirdStep result={testTesult} onClick={() => setActiveStep(0)} />,
   };
 
   const handleNext = () => {
@@ -59,15 +86,19 @@ export default function Home() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-
-  
   //acompanha o currentWidth do browser
   var w = window.innerWidth;
-  window.addEventListener('resize', () => w = window.innerWidth);
+  window.addEventListener("resize", () => (w = window.innerWidth));
 
   return (
-    <Box display="flex" flex={1} flexDirection="column" justifyContent={"center"} bgcolor={"#5e95ff"}>
-      <Navbar />
+    <Box
+      display="flex"
+      flex={1}
+      flexDirection="column"
+      justifyContent={"center"}
+      bgcolor={"#5e95ff"}
+    >
+      <Navbar handleNav={setPage} />
       <Box
         display="flex"
         flexDirection="column"
@@ -75,63 +106,66 @@ export default function Home() {
         border={0}
         alignItems={"center"}
         justifyContent={"center"}
-        
         marginTop={5}
         bgcolor={"#fff"}
         padding={6}
         gap={5}
         sx={{ borderRadius: "40px 40px 0 0" }}
       >
-        
-        {Stepper[activeStep]}
-        {(activeStep != 0 && activeStep < 5) && (
-          <Box
-            display={"flex"}
-            width={"100%"}
-            justifyContent={"center"}
-            alignItems="center"
-          >
-            <MobileStepper
-              variant="dots"
-              steps={4}
-              position="bottom"
-              activeStep={activeStep -1}
-              sx={
-                w <= 900
-                  ? { flexGrow: 1 }
-                  : {
-                      width: "100%",
-                      marginTop: 5,
-                      marginBottom: 5,
-                      justifyContent: "center",
-                      gap: 20,
-                    }
-              }
-              nextButton={
-                <Button
-                  size="small"
-                  onClick={handleNext}
-                  disabled={activeStep === 4}
-                >
-                  Next
-                  <KeyboardArrowRight />
-                </Button>
-              }
-              backButton={
-                <Button
-                  size="small"
-                  onClick={handleBack}
-                  disabled={activeStep === 1}
-                >
-                  <KeyboardArrowLeft />
-                  Back
-                </Button>
-              }
-            />
-          </Box>
+        {page === "Home" ? (
+          <>
+            {Stepper[activeStep]}
+            {activeStep != 0 && activeStep < 5 && (
+              <Box
+                display={"flex"}
+                width={"100%"}
+                justifyContent={"center"}
+                alignItems="center"
+              >
+                <MobileStepper
+                  variant="dots"
+                  steps={4}
+                  position="bottom"
+                  activeStep={activeStep - 1}
+                  sx={
+                    w <= 900
+                      ? { flexGrow: 1 }
+                      : {
+                          width: "100%",
+                          marginTop: 5,
+                          marginBottom: 5,
+                          justifyContent: "center",
+                          gap: 20,
+                        }
+                  }
+                  nextButton={
+                    <Button
+                      size="small"
+                      onClick={handleNext}
+                      disabled={activeStep === 4}
+                    >
+                      Next
+                      <KeyboardArrowRight />
+                    </Button>
+                  }
+                  backButton={
+                    <Button
+                      size="small"
+                      onClick={handleBack}
+                      disabled={activeStep === 1}
+                    >
+                      <KeyboardArrowLeft />
+                      Back
+                    </Button>
+                  }
+                />
+              </Box>
+            )}
+          </>
+        ) : (
+          <AboutUs />
         )}
       </Box>
-
     </Box>
   );
 }

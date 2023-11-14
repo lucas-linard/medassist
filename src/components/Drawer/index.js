@@ -13,7 +13,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { redirect } from "next/navigation";
 
-export default function TemporaryDrawer({ state = { left: false }, setState }) {
+export default function TemporaryDrawer({ state = { left: false }, setState, handleNav }) {
   const toggleDrawer = (anchor, open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -33,9 +33,9 @@ export default function TemporaryDrawer({ state = { left: false }, setState }) {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {[{title: "Home", goTo: "/"},{title: "Sobre nós", goTo: "/About"}].map((text, index) => (
+        {[{title: "Home", goTo: "Home"},{title: "Sobre nós", goTo: "About"}].map((text, index) => (
           <ListItem key={text.title} disablePadding>
-            <ListItemButton onClick={() => redirect(text.goTo)}>
+            <ListItemButton onClick={() => handleNav(text.goTo)}>
               <ListItemIcon>
                 {index % 2 === 0 ? <HomeOutlinedIcon /> : <InfoOutlinedIcon />}
               </ListItemIcon>
